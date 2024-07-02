@@ -75,9 +75,9 @@ void wte_backward_kernel(floatX *dwte, const sycl::int4 *bucket_info,
 
     // Each thread handles "x128::size" channels, so at fp8, each warp would handle 512 channels
     // If C is not a multiple of this (e.g. 768), some buckets/c_groups cannot use the entire warp
-    if (c >= C) { return; }
+    if (c >= C) { item_ct1.barrier(sycl::access::fence_space::local_space); return; }
     // Exit early if this is a small bucket and this warp doesn't have any items to process
-    if (warp_id >= bucket_size) { return; }
+    if (warp_id >= bucket_size) { item_ct1.barrier(sycl::access::fence_space::local_space); return; }
 
     float accum[x128::size] = {0.0f};
 
@@ -96,6 +96,7 @@ void wte_backward_kernel(floatX *dwte, const sycl::int4 *bucket_info,
         for (int k = 0; k < x128::size; k++) {
             accum_shared[item_ct1.get_local_id(2) + k * BLOCK_SIZE] = accum[k];
         }
+        item_ct1.barrier(sycl::access::fence_space::local_space);
         return; // only warp 0 is needed after writing to shared memory
     }
 
