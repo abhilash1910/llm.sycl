@@ -514,8 +514,8 @@ try{
     
     size_t shared_mem_size =
         (2 * rounded_C + 2 * (block_size - 32) * f128::size) * sizeof(float);
-
-    std::memset(scratch, 0, 1 * sizeof(float));
+    
+    q_ct1.memset(scratch, 0, 1 * sizeof(float)).wait();
                              
     
     q_ct1.submit([&](sycl::handler &cgh) {
