@@ -18,7 +18,7 @@ endif
 
 #PVC flag
 ifeq ($(SPIRV),yes)
-    CXXFLAGS += -fsycl-targets=spir64_gen -device=pvc -fPIC -DMKL_ILP64 
+    CXXFLAGS += -fsycl-targets=spir64_gen -Xs "device pvc" -fPIC -DMKL_ILP64
 endif
 
 
